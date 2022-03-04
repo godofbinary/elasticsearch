@@ -59,10 +59,60 @@ Les paramètres commun pour toutes les requête de cette API sont:
 [Renvoie des informations sur les différents shards du cluster](https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-shards.html).
 
 ## 3. Index API
-[Index API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices.html) permet de gérer les index du cluster à savoir:
-* configuration des index
+[Index API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices.html) permet d'éffectuer des opérations sur les index à  savoir:
+* création et configuration des index
 * alias
 * mappings
 * templates
 
+### Gestion des index
+`PUT /<index>`
+[Créer un nouvel index](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-create-index.html). On peut passer en paramètres la configuration requise pour la création de l'index: ***aliases***, ***mappings***, ***settings***
 
+`PUT /my-index-000001`
+```json
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 2
+  },
+  "mappings": {
+    "properties": {
+      "field1": { "type": "text" }
+    }
+  },
+  "aliases": {
+    "alias_1": {},
+    "alias_2": {
+      "routing": "shard-1",
+      "is_write_index": true
+    }
+  }
+}
+```
+
+`DELETE /<index>`
+[Supprimer un index](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-delete-index.html).
+
+`GET /<index>`
+[Renvoie les informations sur un index](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-index.html).
+
+### Gestion du mapping
+
+`PUT /<index>/_mapping`
+[Modifier le mapping d'un index existant](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-put-mapping.html). Prends en paramètre la configuration du mapping.
+
+`PUT /<index>/_mapping`
+```jsonn
+{
+  "properties": {
+    "comment":  { "type": "text"}
+  }
+}
+```
+
+`GET /<index>/_mapping`
+[Renvoie le mapping d'un index](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-mapping.html).
+
+`GET /<index>/_mapping/field/<field>`
+[Renvoie le mapping d'un ou plusisuers champs d'un index](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-field-mapping.html).
