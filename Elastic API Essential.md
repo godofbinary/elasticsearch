@@ -115,4 +115,70 @@ Les paramètres commun pour toutes les requête de cette API sont:
 [Renvoie le mapping d'un index](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-mapping.html).
 
 `GET /<index>/_mapping/field/<field>`
-[Renvoie le mapping d'un ou plusisuers champs d'un index](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-field-mapping.html).
+[Renvoie le mapping d'un ou plusieurs champs d'un index](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-field-mapping.html).
+
+### Gestion des alias
+Cett API permet de gérer les [alias](https://www.elastic.co/guide/en/elasticsearch/reference/current/aliases.html) d'un index. L'utilisation de cette API se fait comme décrit [ici](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-aliases.html).
+`POST _aliases`
+```json
+{
+  "actions": [
+    {
+      "add": {
+        "index": "my-index",
+        "alias": "my-alias",
+        "is_write_index": true
+      }
+    }
+  ]
+}
+```
+> Le code précédent permet de realiser une action d'ajout d'alias sur un index.  
+ 
+`POST _aliases`
+```json
+{
+  "actions": [
+    {
+      "remove": {
+        "index": "logs-nginx.access-prod",
+        "alias": "logs"
+      }
+    }
+  ]
+}
+```
+> Le code précédent permet de realiser une action de suppression d'alias sur un index.  
+
+`POST _aliases`
+```json
+{
+  "actions": [
+    {
+      "remove": {
+        "index": "logs-nginx.access-prod",
+        "alias": "logs"
+      }
+    },
+    {
+      "add": {
+        "index": "logs-my_app-default",
+        "alias": "logs"
+      }
+    }
+  ]
+}
+```
+> Le code précédent permet de realiser 2 actions (ajout et suppression [swap]) d'alias sur deux index. En pratique cela consite à retirer l'alias d'un index pour l'assigner à un autre index et le tout sans downtime. 
+
+`GET _alias/<alias>`
+`GET _alias`
+`GET <target>/_alias/<alias>`
+[Récuperer les informations sur un ou tous les alias](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-get-alias.html).
+
+`HEAD _alias/<alias>`
+[Vérifier l'existance d'un alias](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-alias-exists.html).
+
+`DELETE <target>/_alias/<alias>`
+`DELETE <target>/_aliases/<alias>`
+[Supprimer un ou plusieurs alias](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-delete-alias.html).
