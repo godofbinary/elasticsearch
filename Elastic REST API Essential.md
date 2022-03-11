@@ -208,3 +208,78 @@ Cett API permet de gérer les [alias](https://www.elastic.co/guide/en/elasticsea
 
 ## 4. Document API
 [Document API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs.html) permet d'effectuer les classiques opérations CRUD sur un index. Ces opérations peuvent s'effectuer sur un document unique ou sur un ensemble de documents (bulk).
+
+##### [Indexer un document](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html)
+`POST /<target>/_doc/<_id>`
+Ajouter un document json (passé en paramètre) en spécifiant son ID. Si un document avec cet ID existe déjà, il sera remplacé.
+
+`POST /<target>/_doc/`
+Ajouter un document json (passé en paramètre) sans spécifier son ID. un ID sera généré automatiquement par elasticsearch.
+
+`POST /<target>/_create/<_id>`
+Ajouter un document json (passé en paramètre) en spécifiant un ID. Si un document avec cet ID existe déjà, la requête échouera.
+
+##### [Récuperer un document json](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-get.html)
+`GET <index>/_doc/<_id>`
+Récuperer un document et ses métadonnées, via son ID.
+
+`GET <index>/_source/<_id>`
+Récuperer un document sans ses métadonnées, via son ID.
+
+##### [Supprimer un document](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete.html)
+`DELETE /<index>/_doc/<_id>`
+Supprimer le document dont l'ID est passé en paramètre.
+
+##### [Mettre à jour un document](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update.html)
+`POST /<index>/_update/<_id>`
+```json
+{
+  "doc": {
+    "comment": "This is a modified comment of document 4"
+  }
+}
+```
+Mettre à jour document en lui passant en paramètre son nouveau contenu des champs.
+La mise à jour peut se faire aussi via un script painless comme suit:
+``POST /<index>/_update/<_id>``
+```json
+{
+  "script" : {
+    "source": "ctx._source.comment = params.comment",
+    "lang": "painless",
+    "params" : {
+      "comment" : "This is a comment of document 4"
+    }
+  }
+}
+```
+##### [Mettre à jour/Supprimer un document qui match une requête](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update-by-query.html)
+Quand on a besoin de mettre à jour plusieurs document qui respectent des critères, on utilise l'API update_by_query, auqel on passe en paramètre la requête elasticsearch qui de selectionner ces documents.
+`POST /<target>/_update_by_query`
+```json
+{
+  "query": { 
+    "term": {
+      "user.id": "kimchy"
+    }
+  }
+}
+```
+Son équivalent pour supprimer les documents est [delete_by_query](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html).
+`POST /<target>/_delete_by_query`
+```json
+{
+  "query": {
+    "match": {
+      "user.id": "elkbee"
+    }
+  }
+}
+```
+
+## 5. Bulk API
+[Bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html) permet de réaliser puliseurs opérations CRUD en une seule requête.
+
+
+## 6. Reindex API
+[Reindex API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html) permet de copier des documents directement d'un index source vers un index de destination.
