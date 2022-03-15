@@ -280,6 +280,74 @@ Son équivalent pour supprimer les documents est [delete_by_query](https://www.e
 ## 5. Bulk API
 [Bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html) permet de réaliser puliseurs opérations CRUD en une seule requête.
 
+`POST /_bulk`
+```json
+{ "index" : {...} }
+{ "delete" : {...} }
+{ "create" : {...} }
+{ "update" : {...} }
+```
+En utilisant l'API Bulk, on peut spécifier les 4 actions `index`, `create`, `update`, `delete`.
+`POST _bulk`
+```json
+{ "index" : { "_index" : "test", "_id" : "1" } }
+{ "field1" : "value1" }
+{ "delete" : { "_index" : "test", "_id" : "2" } }
+{ "create" : { "_index" : "test", "_id" : "3" } }
+{ "field1" : "value3" }
+{ "update" : {"_id" : "1", "_index" : "test"} }
+{ "doc" : {"field2" : "value2"} }
+```
 
 ## 6. Reindex API
 [Reindex API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html) permet de copier des documents directement d'un index source vers un index de destination.
+`POST /_reindex`
+```json
+{
+  "source": {
+    "index": "my-index-000001"
+  },
+  "dest": {
+    "index": "my-new-index-000001"
+  }
+}
+```
+Avec l'API Reindex, on peut aller plus loin En:
+* utilisant une query pour limiter le nombre de documents à reindexer
+* limiter le nombre maximum de documents à reindexer
+* reindexer à partir de plusieurs sources
+* selectionner les champs à reindexer
+* reindexer en modifiant le libellé des champs
+* paralleliser la reindexation en utilisant les slices.
+
+## 7. Search API
+[Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search.html) permet d'effectuer des recherches et des agrégations sur les documents stockés.
+`GET /<target>/_search`
+`POST /<target>/_search`
+```json
+{}
+```
+[Renvoie les documents qui matchent la requête passée en paramètre](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html).
+Cette requête possède plusieurs paramètres.
+
+`GET /<target>/_count`
+```json
+{}
+```
+[Compter le nombre de document qui matchent la requête passée en paramètre](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-count.html).
+
+`GET /<target>/_validate/query`
+```json
+{}
+```
+[Valider la requête passée en paramètre sans l'exécuter](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-validate.html).
+
+## 8. Info API
+`GET /_xpack`
+[Renvoie l'état' features installées sur le cluster](https://www.elastic.co/guide/en/elasticsearch/reference/current/info-api.html).
+
+## 9. Ingest API
+[Ingest API](https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest-apis.html) permet de gérer les tâches et les ressources liées aux pipelines ingest et processors.
+
+## 10. Enrich API
+[Enrich API](https://www.elastic.co/guide/en/elasticsearch/reference/current/enrich-apis.html) permet de gérer les politiques d'enrichissement des documents pendant l'indexation.
